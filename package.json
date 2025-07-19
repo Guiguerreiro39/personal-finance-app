@@ -1,0 +1,51 @@
+{
+  "name": "t3-trpc-effect-template",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "next build",
+    "check": "biome check .",
+    "check:unsafe": "biome check --write --unsafe .",
+    "check:write": "biome check --write .",
+    "dev": "next dev --turbo",
+    "preview": "next build && next start",
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "prisma:studio": "npx prisma studio",
+    "prisma:migrate": "npx prisma migrate"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.12.0",
+    "@prisma/extension-accelerate": "^2.0.2",
+    "@t3-oss/env-nextjs": "^0.12.0",
+    "@tanstack/react-query": "^5.69.0",
+    "@trpc/client": "^11.0.0",
+    "@trpc/react-query": "^11.0.0",
+    "@trpc/server": "^11.0.0",
+    "next": "^15.2.3",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "server-only": "^0.0.1",
+    "superjson": "^2.2.1"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.1.2",
+    "@effect/language-service": "^0.27.2",
+    "@tailwindcss/postcss": "^4.0.15",
+    "@types/node": "^20.14.10",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "effect": "^3.16.13",
+    "husky": "^9.1.7",
+    "postcss": "^8.5.3",
+    "prisma": "^6.12.0",
+    "tailwindcss": "^4.0.15",
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.2",
+    "ultracite": "5.0.43"
+  },
+  "ct3aMetadata": {
+    "initVersion": "7.39.3"
+  }
+}
