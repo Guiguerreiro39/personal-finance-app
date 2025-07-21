@@ -14,10 +14,45 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Post {
-  id        String @id @default(cuid())
-  name     String
-  
+enum TransactionType {
+  INCOME
+  EXPENSE
+}
+
+enum SubscriptionFrequency {
+  DAILY
+  WEEKLY
+  MONTHLY
+  YEARLY
+}
+
+model Transaction {
+  id          String          @id @default(cuid())
+  label       String
+  amount      Int
+  type        TransactionType @default(INCOME)
+  date        DateTime
+  isRecurring Boolean         @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Category {
+  id    String @id @default(cuid())
+  label String @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Subscription {
+  id          String                @id @default(cuid())
+  label       String
+  amount      Int
+  frequency   SubscriptionFrequency
+  nextDueDate DateTime
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
