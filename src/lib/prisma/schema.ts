@@ -1,31 +1,31 @@
-import { Prisma } from "@prisma/generated";
-import { Data, type Schema } from "effect";
+import { Data } from 'effect';
+import { Prisma } from '~/prisma/generated';
 
 export type PrismaErrors =
-	| Prisma.PrismaClientKnownRequestError
-	| Prisma.PrismaClientUnknownRequestError
-	| Prisma.PrismaClientRustPanicError
-	| Prisma.PrismaClientInitializationError
-	| Prisma.PrismaClientValidationError;
+  | Prisma.PrismaClientKnownRequestError
+  | Prisma.PrismaClientUnknownRequestError
+  | Prisma.PrismaClientRustPanicError
+  | Prisma.PrismaClientInitializationError
+  | Prisma.PrismaClientValidationError;
 
-export class DatabaseError extends Data.TaggedError("DatabaseError")<{
-	readonly cause: PrismaErrors;
+export class DatabaseError extends Data.TaggedError('DatabaseError')<{
+  readonly cause: PrismaErrors;
 }> {
-	public override toString() {
-		return `DatabaseError: ${this.cause.message}`;
-	}
+  override toString() {
+    return `DatabaseError: ${this.cause.message}`;
+  }
 
-	public get message() {
-		return this.cause.message;
-	}
+  override get message() {
+    return this.cause.message;
+  }
 }
 
 export function isPrismaError(error: unknown): error is PrismaErrors {
-	return (
-		error instanceof Prisma.PrismaClientKnownRequestError ||
-		error instanceof Prisma.PrismaClientUnknownRequestError ||
-		error instanceof Prisma.PrismaClientRustPanicError ||
-		error instanceof Prisma.PrismaClientInitializationError ||
-		error instanceof Prisma.PrismaClientValidationError
-	);
+  return (
+    error instanceof Prisma.PrismaClientKnownRequestError ||
+    error instanceof Prisma.PrismaClientUnknownRequestError ||
+    error instanceof Prisma.PrismaClientRustPanicError ||
+    error instanceof Prisma.PrismaClientInitializationError ||
+    error instanceof Prisma.PrismaClientValidationError
+  );
 }

@@ -1,9 +1,5 @@
-import { HydrateClient } from "@/trpc/server";
+import { HydrateClient } from '@/trpc/server';
 
-export default async function Home() {
-	return (
-		<HydrateClient>
-			<main></main>
-		</HydrateClient>
-	);
+export default function Home() {
+  return <HydrateClient>Hello World</HydrateClient>;
 }
