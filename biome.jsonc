@@ -1,37 +1,39 @@
 {
-	"$schema": "https://biomejs.dev/schemas/2.1.2/schema.json",
-	"vcs": {
-		"enabled": true,
-		"clientKind": "git",
-		"useIgnoreFile": true
-	},
-	"files": {
-		"ignoreUnknown": false
-	},
-	"formatter": {
-		"enabled": true
-	},
-	"assist": {
-		"actions": {
-			"source": {
-				"organizeImports": "on"
-			}
-		}
-	},
-	"linter": {
-		"enabled": true,
-		"rules": {
-			"nursery": {
-				"useSortedClasses": {
-					"level": "warn",
-					"fix": "safe",
-					"options": {
-						"functions": ["clsx", "cva", "cn"]
-					}
-				}
-			},
-			"recommended": true
-		}
-	},
-	"extends": ["ultracite"]
+  "$schema": "https://biomejs.dev/schemas/2.1.2/schema.json",
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
+  "files": {
+    "includes": ["src/**/*.ts", "src/**/*.tsx", "prisma/seed.ts"],
+    "ignoreUnknown": false
+  },
+  "formatter": {
+    "enabled": true
+  },
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
+    }
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "nursery": {
+        "useSortedClasses": {
+          "level": "warn",
+          "fix": "safe",
+          "options": {
+            "functions": ["clsx", "cva", "cn"]
+          }
+        }
+      },
+      "recommended": true
+    }
+  },
+
+  "extends": ["ultracite"]
 }

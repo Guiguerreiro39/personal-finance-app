@@ -1,6 +1,6 @@
-import { PostService } from "@/features/post/service";
-import { Layer, ManagedRuntime } from "effect";
+import { Layer, ManagedRuntime } from 'effect';
+import { TransactionService } from '@/features/transactions/service';
 
-const MainLayer = Layer.mergeAll(PostService.Default);
+const MainLayer = Layer.mergeAll(TransactionService.Default);
 
 export const RuntimeServer = ManagedRuntime.make(MainLayer);

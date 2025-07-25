@@ -1,14 +1,12 @@
-import { Button } from '@/components/ui/button';
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ExpenseIncomeForm } from '@/features/transactions/components/dialogs/create-transaction/expense-income-form';
 
 type Props = {
   open: boolean;
@@ -26,25 +24,23 @@ export function CreateTransactionDialog({ open, onOpenChange }: Props) {
           </DialogDescription>
         </DialogHeader>
         <Tabs defaultValue="expense">
-          <TabsList className="w-full">
+          <TabsList className="mb-4 w-full">
             <TabsTrigger value="expense">Expense</TabsTrigger>
             <TabsTrigger value="income">Income</TabsTrigger>
           </TabsList>
           <TabsContent value="expense">
-            Make changes to your account here.
+            <ExpenseIncomeForm
+              onSuccess={() => onOpenChange(false)}
+              type="EXPENSE"
+            />
           </TabsContent>
-          <TabsContent value="income">Change your password here.</TabsContent>
+          <TabsContent value="income">
+            <ExpenseIncomeForm
+              onSuccess={() => onOpenChange(false)}
+              type="INCOME"
+            />
+          </TabsContent>
         </Tabs>
-        <DialogFooter>
-          <DialogClose asChild>
-            <Button className="flex-1" variant="outline">
-              Cancel
-            </Button>
-          </DialogClose>
-          <Button className="flex-1" type="submit">
-            Create
-          </Button>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

@@ -1,11 +1,11 @@
 import { TransactionsHeader } from './components/header';
 import { TransactionsTable } from './components/table';
 
-export const TransactionsPage = () => {
+export const TransactionsList = () => {
   return (
-    <div>
+    <>
       <TransactionsHeader />
       <TransactionsTable />
-    </div>
+    </>
   );
 };

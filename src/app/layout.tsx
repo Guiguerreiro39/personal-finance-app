@@ -5,6 +5,7 @@ import { JetBrains_Mono, Poppins } from 'next/font/google';
 import { AppSidebar } from '@/components/app-sidebar';
 import { AppTopbar } from '@/components/app-topbar';
 import { SidebarProvider } from '@/components/ui/sidebar';
+import { Toaster } from '@/components/ui/sonner';
 import { TRPCReactProvider } from '@/trpc/react';
 
 export const metadata: Metadata = {
@@ -38,6 +39,7 @@ export default function RootLayout({
               <AppTopbar />
             </nav>
             <main className="mt-18 w-full p-4">{children}</main>
+            <Toaster />
           </TRPCReactProvider>
         </SidebarProvider>
       </body>

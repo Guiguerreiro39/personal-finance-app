@@ -28,7 +28,7 @@ enum SubscriptionFrequency {
 
 model Transaction {
   id          String          @id @default(cuid())
-  label       String
+  description String
   amount      Int
   type        TransactionType @default(INCOME)
   date        DateTime

@@ -32,14 +32,17 @@ export const DataTable = <TData, TValue>({
   });
 
   return (
-    <div className="overflow-hidden rounded-md border">
+    <div className="overflow-hidden rounded-md border shadow-sm">
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
+            <TableRow
+              className="bg-accent hover:bg-accent/80"
+              key={headerGroup.id}
+            >
               {headerGroup.headers.map((header) => {
                 return (
-                  <TableHead key={header.id}>
+                  <TableHead className="text-accent-foreground" key={header.id}>
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -60,7 +63,12 @@ export const DataTable = <TData, TValue>({
                 key={row.id}
               >
                 {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
+                  <TableCell
+                    key={cell.id}
+                    style={{
+                      width: cell.column.getSize(),
+                    }}
+                  >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}
