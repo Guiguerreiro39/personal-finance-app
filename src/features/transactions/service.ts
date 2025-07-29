@@ -39,9 +39,14 @@ export class TransactionService extends Effect.Service<TransactionService>()(
           Effect.gen(function* () {
             const transactions = yield* execute(
               prisma.transaction.findMany({
-                orderBy: {
-                  createdAt: 'desc',
-                },
+                orderBy: [
+                  {
+                    date: 'desc',
+                  },
+                  {
+                    createdAt: 'desc',
+                  },
+                ],
                 cursor: cursor
                   ? {
                       id: cursor,

@@ -35,19 +35,33 @@ export const InfiniteScroll = ({
   return (
     <div className="flex flex-col items-center">
       <div className="h-1" ref={targetRef} />
-      {hasNextPage ? (
-        <Button
-          disabled={!hasNextPage || isFetchingNextPage}
-          onClick={fetchNextPage}
-          variant="link"
-        >
-          {isFetchingNextPage ? 'Loading...' : 'Load more'}
-        </Button>
-      ) : (
-        <p className="text-muted-foreground text-xs">
-          You have reached the end of the list
-        </p>
-      )}
+      {(() => {
+        if (!hasNextPage) {
+          return (
+            <p className="text-muted-foreground text-xs">
+              You have reached the end of the list
+            </p>
+          );
+        }
+
+        if (hasNextPage && isManual) {
+          return (
+            <Button
+              disabled={!hasNextPage || isFetchingNextPage}
+              onClick={fetchNextPage}
+              variant="link"
+            >
+              {isFetchingNextPage ? 'Loading...' : 'Load more'}
+            </Button>
+          );
+        }
+
+        if (hasNextPage && isFetchingNextPage) {
+          return <p className="text-muted-foreground text-xs">Loading...</p>;
+        }
+
+        return null;
+      })()}
     </div>
   );
 };

@@ -58,7 +58,7 @@ export const ExpenseIncomeForm = ({ type, onSuccess }: Props) => {
       description: '',
       amount: 0,
       type,
-      date: new Date(),
+      date: new Date(new Date().setHours(0, 0, 0, 0)),
       isRecurring: false,
     },
   });

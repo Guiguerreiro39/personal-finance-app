@@ -3,8 +3,11 @@ import {
   flexRender,
   getCoreRowModel,
   getPaginationRowModel,
+  type Row,
   useReactTable,
 } from '@tanstack/react-table';
+import { useVirtualizer } from '@tanstack/react-virtual';
+import { useEffect } from 'react';
 
 import {
   Table,
@@ -14,16 +17,34 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { useIntersectionObserver } from '@/hooks/use-intersection-observer';
 
 type Props<TData, TValue> = {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  fetchNextPageAction: () => void;
+  hasNextPage: boolean;
+  isFetchingNextPage: boolean;
 };
 
-export const DataTable = <TData, TValue>({
+export const InfiniteDataTable = <TData, TValue>({
   columns,
   data,
+  fetchNextPageAction,
+  hasNextPage,
+  isFetchingNextPage,
 }: Props<TData, TValue>) => {
+  const { targetRef, isIntersecting } = useIntersectionObserver({
+    rootMargin: '100px',
+    threshold: 0.5,
+  });
+
+  useEffect(() => {
+    if (isIntersecting && hasNextPage && !isFetchingNextPage) {
+      fetchNextPageAction();
+    }
+  }, [isIntersecting, hasNextPage, isFetchingNextPage, fetchNextPageAction]);
+
   const table = useReactTable({
     get data() {
       return data;
@@ -35,10 +56,24 @@ export const DataTable = <TData, TValue>({
 
   const { rows } = table.getCoreRowModel();
 
+  const rowVirtualizer = useVirtualizer({
+    count: rows.length,
+    estimateSize: () => 33, //estimate row height for accurate scrollbar dragging
+    getScrollElement: () => targetRef.current,
+    //measure dynamic row height, except in firefox because it measures table border height incorrectly
+    measureElement:
+      typeof window !== 'undefined' &&
+      navigator.userAgent.indexOf('Firefox') === -1
+        ? (element) => element?.getBoundingClientRect().height
+        : undefined,
+    overscan: 5,
+  });
+
   return (
     <div
       className="relative flex-1 overflow-auto rounded-md border shadow-sm"
       data-slot="table-container"
+      ref={targetRef}
     >
       <Table>
         <TableHeader className="!sticky top-0 z-10">
@@ -63,8 +98,10 @@ export const DataTable = <TData, TValue>({
           ))}
         </TableHeader>
         <TableBody>
-          {rows.length > 0 &&
-            rows.map((row) => {
+          {rowVirtualizer.getVirtualItems().length > 0 &&
+            rowVirtualizer.getVirtualItems().map((virtualRow) => {
+              const row = rows[virtualRow.index] as Row<TData>;
+
               return (
                 <TableRow
                   data-state={row.getIsSelected() && 'selected'}
@@ -86,7 +123,7 @@ export const DataTable = <TData, TValue>({
                 </TableRow>
               );
             })}
-          {rows.length === 0 && (
+          {rowVirtualizer.getVirtualItems().length === 0 && (
             <TableRow>
               <TableCell className="h-24 text-center" colSpan={columns.length}>
                 No results.
@@ -95,6 +132,7 @@ export const DataTable = <TData, TValue>({
           )}
         </TableBody>
       </Table>
+      {isFetchingNextPage && <div>Fetching More...</div>}
     </div>
   );
 };
