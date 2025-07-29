@@ -4,8 +4,12 @@ import {
   type ColumnDef,
   flexRender,
   getCoreRowModel,
+  getPaginationRowModel,
+  type Row,
   useReactTable,
 } from '@tanstack/react-table';
+import { useVirtualizer } from '@tanstack/react-virtual';
+import { useEffect } from 'react';
 
 import {
   Table,
@@ -15,26 +19,64 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { useIntersectionObserver } from '@/hooks/use-intersection-observer';
 
 type Props<TData, TValue> = {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  fetchNextPageAction: () => void;
+  hasNextPage: boolean;
+  isFetchingNextPage: boolean;
 };
 
 export const DataTable = <TData, TValue>({
   columns,
   data,
+  fetchNextPageAction,
+  hasNextPage,
+  isFetchingNextPage,
 }: Props<TData, TValue>) => {
+  const { targetRef, isIntersecting } = useIntersectionObserver({
+    rootMargin: '100px',
+    threshold: 0.5,
+  });
+
+  useEffect(() => {
+    if (isIntersecting && hasNextPage && !isFetchingNextPage) {
+      fetchNextPageAction();
+    }
+  }, [isIntersecting, hasNextPage, isFetchingNextPage, fetchNextPageAction]);
+
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+  });
+
+  const { rows } = table.getRowModel();
+
+  const rowVirtualizer = useVirtualizer({
+    count: rows.length,
+    estimateSize: () => 33, //estimate row height for accurate scrollbar dragging
+    getScrollElement: () => targetRef.current,
+    //measure dynamic row height, except in firefox because it measures table border height incorrectly
+    measureElement:
+      typeof window !== 'undefined' &&
+      navigator.userAgent.indexOf('Firefox') === -1
+        ? (element) => element?.getBoundingClientRect().height
+        : undefined,
+    overscan: 5,
   });
 
   return (
-    <div className="overflow-hidden rounded-md border shadow-sm">
+    <div
+      className="relative flex-1 overflow-auto rounded-md border shadow-sm"
+      data-slot="table-container"
+      ref={targetRef}
+    >
       <Table>
-        <TableHeader>
+        <TableHeader className="!sticky top-0 z-10">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow
               className="bg-accent hover:bg-accent/80"
@@ -56,24 +98,31 @@ export const DataTable = <TData, TValue>({
           ))}
         </TableHeader>
         <TableBody>
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow
-                data-state={row.getIsSelected() && 'selected'}
-                key={row.id}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell
-                    key={cell.id}
-                    style={{
-                      width: cell.column.getSize(),
-                    }}
-                  >
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))
+          {rowVirtualizer.getVirtualItems().length > 0 ? (
+            rowVirtualizer.getVirtualItems().map((virtualRow) => {
+              const row = rows[virtualRow.index] as Row<TData>;
+
+              return (
+                <TableRow
+                  data-state={row.getIsSelected() && 'selected'}
+                  key={row.id}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell
+                      key={cell.id}
+                      style={{
+                        width: cell.column.getSize(),
+                      }}
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              );
+            })
           ) : (
             <TableRow>
               <TableCell className="h-24 text-center" colSpan={columns.length}>
@@ -83,6 +132,7 @@ export const DataTable = <TData, TValue>({
           )}
         </TableBody>
       </Table>
+      {isFetchingNextPage && <div>Fetching More...</div>}
     </div>
   );
 };

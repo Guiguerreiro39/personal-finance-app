@@ -1,27 +1,49 @@
 'use client';
 
+import { useDebounce } from '@uidotdev/usehooks';
+import { useMemo, useState } from 'react';
 import { DataTable } from '@/components/data-table';
+import { Input } from '@/components/ui/input';
+import { DEFAULT_LIMIT } from '@/lib/constants';
 import { api } from '@/trpc/react';
 import { columns } from './columns';
 
 export const TransactionsTable = () => {
-  const { data, error, isLoading } = api.transaction.getAll.useQuery();
+  const [search, setSearch] = useState('');
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+  const debouncedSearch = useDebounce(search, 300);
 
-  if (error) {
-    return <div>Error: {error.message}</div>;
-  }
+  const [data, query] = api.transaction.getMany.useSuspenseInfiniteQuery(
+    {
+      limit: DEFAULT_LIMIT,
+      search: debouncedSearch,
+    },
+    {
+      initialCursor: undefined,
+      getNextPageParam: (lastPage) => lastPage.nextCursor,
+    }
+  );
 
-  if (!data) {
-    return <div>No data</div>;
-  }
+  const flatTransactions = useMemo(
+    () => data.pages.flatMap((page) => page.transactions) ?? [],
+    [data]
+  );
 
   return (
-    <div className="container mx-auto py-10">
-      <DataTable columns={columns} data={[...data]} />
+    <div className="flex flex-1 flex-col gap-4">
+      <Input
+        className="w-full"
+        onChange={(e) => setSearch(e.target.value)}
+        placeholder="Search transaction..."
+        value={search}
+      />
+      <DataTable
+        columns={columns}
+        data={flatTransactions}
+        fetchNextPageAction={query.fetchNextPage}
+        hasNextPage={query.hasNextPage}
+        isFetchingNextPage={query.isFetchingNextPage}
+      />
     </div>
   );
 };

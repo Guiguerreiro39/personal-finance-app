@@ -2,36 +2,17 @@
 
 import type { ColumnDef } from '@tanstack/react-table';
 import { DateTime, Effect, Option, Schema } from 'effect';
-import { Check, MoreHorizontal, OctagonAlert, X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Check, OctagonAlert, X } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import {
   type Transaction,
   TransactionType,
 } from '@/features/transactions/schema';
+import { Actions } from './actions';
 
-export const columns: ColumnDef<typeof Transaction.Type>[] = [
+export const columns: ColumnDef<Transaction>[] = [
   {
     id: 'select',
-    header: ({ table }) => (
-      <Checkbox
-        aria-label="Select all"
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && 'indeterminate')
-        }
-        className="border-accent-foreground/30"
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-      />
-    ),
     cell: ({ row }) => (
       <Checkbox
         aria-label="Select row"
@@ -73,7 +54,9 @@ export const columns: ColumnDef<typeof Transaction.Type>[] = [
     accessorKey: 'date',
     header: 'Date',
     cell: ({ row }) => {
-      return Schema.decodeUnknown(Schema.Date)(row.getValue('date')).pipe(
+      return Schema.decodeUnknown(Schema.DateFromSelf)(
+        row.getValue('date')
+      ).pipe(
         Effect.match({
           onFailure: () => {
             return (
@@ -142,27 +125,7 @@ export const columns: ColumnDef<typeof Transaction.Type>[] = [
     maxSize: 10,
     cell: ({ row }) => {
       const transaction = row.original;
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button className="h-8 w-8 p-0" variant="ghost">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(transaction.id)}
-            >
-              Copy transaction ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View transaction details</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
+      return <Actions transaction={transaction} />;
     },
   },
 ];
