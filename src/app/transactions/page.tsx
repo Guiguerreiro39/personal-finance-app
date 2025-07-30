@@ -1,4 +1,4 @@
-import { TransactionsList } from '@/features/transactions/pages/transactions-list';
+import { TransactionsList } from '@/features/transaction/pages/transactions-list';
 import { DEFAULT_LIMIT } from '@/lib/constants';
 import { api, HydrateClient } from '@/trpc/server';
 
@@ -13,6 +13,8 @@ export default function TransactionsPage() {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
     }
   );
+
+  api.category.getMany.prefetch();
 
   return (
     <HydrateClient>

@@ -17,7 +17,8 @@
     "typecheck": "tsc --noEmit",
     "prisma:studio": "npx prisma studio",
     "prisma:generate": "npx prisma generate",
-    "prisma:migrate": "npx prisma migrate"
+    "prisma:migrate": "npx prisma migrate",
+    "prisma:format": "npx prisma format"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.1.1",

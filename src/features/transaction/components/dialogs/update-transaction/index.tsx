@@ -5,7 +5,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import type { Transaction } from '@/features/transactions/schema';
+import type { Transaction } from '@/features/transaction/schema';
 import { UpdateForm } from './update-form';
 
 type Props = {

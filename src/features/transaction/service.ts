@@ -4,7 +4,7 @@ import {
   type TransactionId,
   type TransactionInputs,
   TransactionNotFound,
-} from '@/features/transactions/schema';
+} from '@/features/transaction/schema';
 import prisma from '@/lib/prisma/client';
 import { execute } from '@/lib/prisma/execute';
 
@@ -19,6 +19,7 @@ export class TransactionService extends Effect.Service<TransactionService>()(
           type,
           date,
           isRecurring,
+          categoryId,
         }: TransactionInputs['create']) =>
           Effect.gen(function* () {
             const transaction = yield* execute(
@@ -29,6 +30,10 @@ export class TransactionService extends Effect.Service<TransactionService>()(
                   type,
                   date,
                   isRecurring,
+                  categoryId,
+                },
+                include: {
+                  category: true,
                 },
               })
             );
@@ -60,6 +65,9 @@ export class TransactionService extends Effect.Service<TransactionService>()(
                     mode: 'insensitive',
                   },
                 },
+                include: {
+                  category: true,
+                },
               })
             );
 
@@ -82,6 +90,9 @@ export class TransactionService extends Effect.Service<TransactionService>()(
               prisma.transaction.findUnique({
                 where: {
                   id,
+                },
+                include: {
+                  category: true,
                 },
               })
             ).pipe(
@@ -113,6 +124,7 @@ export class TransactionService extends Effect.Service<TransactionService>()(
           type,
           date,
           isRecurring,
+          categoryId,
         }: TransactionInputs['update']) =>
           Effect.gen(function* () {
             const transaction = yield* execute(
@@ -126,6 +138,10 @@ export class TransactionService extends Effect.Service<TransactionService>()(
                   type,
                   date,
                   isRecurring,
+                  categoryId,
+                },
+                include: {
+                  category: true,
                 },
               })
             );
@@ -158,6 +174,10 @@ export class TransactionService extends Effect.Service<TransactionService>()(
                   type: transactionToDuplicate.type,
                   date: transactionToDuplicate.date,
                   isRecurring: transactionToDuplicate.isRecurring,
+                  categoryId: transactionToDuplicate.categoryId,
+                },
+                include: {
+                  category: true,
                 },
               })
             );

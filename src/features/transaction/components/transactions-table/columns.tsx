@@ -7,7 +7,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import {
   type Transaction,
   TransactionType,
-} from '@/features/transactions/schema';
+} from '@/features/transaction/schema';
 import { Actions } from './actions';
 
 export const columns: ColumnDef<Transaction>[] = [

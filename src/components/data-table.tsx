@@ -71,12 +71,7 @@ export const DataTable = <TData, TValue>({
                   key={row.id}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell
-                      key={cell.id}
-                      style={{
-                        width: cell.column.getSize(),
-                      }}
-                    >
+                    <TableCell key={cell.id} width={cell.column.getSize()}>
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()

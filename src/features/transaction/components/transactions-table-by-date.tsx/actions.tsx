@@ -1,3 +1,5 @@
+'use client';
+
 import { Copy, Loader2, MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -9,9 +11,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { DeleteTransactionConfirmationDialog } from '@/features/transactions/components/dialogs/delete-transaction-confirmation';
-import { UpdateTransactionDialog } from '@/features/transactions/components/dialogs/update-transaction';
-import type { Transaction } from '@/features/transactions/schema';
+import { DeleteTransactionConfirmationDialog } from '@/features/transaction/components/dialogs/delete-transaction-confirmation';
+import { UpdateTransactionDialog } from '@/features/transaction/components/dialogs/update-transaction';
+import type { Transaction } from '@/features/transaction/schema';
 import { api } from '@/trpc/react';
 
 type Props = {

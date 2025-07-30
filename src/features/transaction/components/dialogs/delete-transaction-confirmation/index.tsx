@@ -9,7 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import type { TransactionId } from '@/features/transactions/schema';
+import type { TransactionId } from '@/features/transaction/schema';
 import { api } from '@/trpc/react';
 
 type Props = {

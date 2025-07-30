@@ -1,4 +1,5 @@
-import { transactionRouter } from '@/features/transactions/router';
+import { categoryRouter } from '@/features/category/router';
+import { transactionRouter } from '@/features/transaction/router';
 import { createCallerFactory, createTRPCRouter } from '@/server/api/trpc';
 
 /**
@@ -7,6 +8,7 @@ import { createCallerFactory, createTRPCRouter } from '@/server/api/trpc';
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
+  category: categoryRouter,
   transaction: transactionRouter,
 });
 

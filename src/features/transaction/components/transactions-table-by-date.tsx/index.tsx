@@ -5,7 +5,7 @@ import { DateTime, Option } from 'effect';
 import { useMemo, useRef } from 'react';
 import { DataTable } from '@/components/data-table';
 import { InfiniteScroll } from '@/components/infinite-scroll';
-import type { Transaction } from '@/features/transactions/schema';
+import type { Transaction } from '@/features/transaction/schema';
 import { DEFAULT_LIMIT } from '@/lib/constants';
 import { api } from '@/trpc/react';
 import { columns } from './columns';

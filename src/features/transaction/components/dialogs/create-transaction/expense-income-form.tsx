@@ -15,41 +15,37 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
-import {
-  type Transaction,
-  TransactionInputs,
-} from '@/features/transactions/schema';
+import { CategorySelect } from '@/features/category/components/category-select';
+import { TransactionInputs } from '@/features/transaction/schema';
 import { disableFutureDates } from '@/lib/date-time';
+import { notReachable } from '@/lib/utils';
 import { api } from '@/trpc/react';
 
 type Props = {
-  transaction: typeof Transaction.Type;
+  type: 'EXPENSE' | 'INCOME';
   onSuccess?: () => void;
 };
 
-export function UpdateForm({ transaction, onSuccess }: Props) {
-  const form = useForm({
-    resolver: effectTsResolver(TransactionInputs.fields.update),
-    defaultValues: {
-      ...transaction,
-      date: new Date(transaction.date),
-    },
-  });
-
+export const ExpenseIncomeForm = ({ type, onSuccess }: Props) => {
   const utils = api.useUtils();
-  const { mutate, isPending } = api.transaction.update.useMutation({
+
+  const { mutate, isPending } = api.transaction.create.useMutation({
     onSuccess: () => {
       utils.transaction.getMany.invalidate();
-      toast.success('Transaction updated successfully');
+
+      switch (type) {
+        case 'EXPENSE':
+          toast.success('Expense created successfully');
+          break;
+        case 'INCOME':
+          toast.success('Income created successfully');
+          break;
+        default:
+          return notReachable(type);
+      }
+
       onSuccess?.();
     },
     onError: (error) => {
@@ -57,13 +53,25 @@ export function UpdateForm({ transaction, onSuccess }: Props) {
     },
   });
 
-  const onSubmit = (values: TransactionInputs['update']) => {
-    mutate(values);
+  const form = useForm({
+    resolver: effectTsResolver(TransactionInputs.fields.create),
+    defaultValues: {
+      description: '',
+      amount: 0,
+      type,
+      date: new Date(new Date().setHours(0, 0, 0, 0)),
+      isRecurring: false,
+      categoryId: undefined,
+    },
+  });
+
+  const onSubmit = (data: TransactionInputs['create']) => {
+    mutate(data);
   };
 
   return (
     <Form {...form}>
-      <form className="mt-4 space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
+      <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
         <FormField
           control={form.control}
           name="description"
@@ -71,7 +79,11 @@ export function UpdateForm({ transaction, onSuccess }: Props) {
             <FormItem>
               <FormLabel>Description</FormLabel>
               <FormControl>
-                <Input placeholder="Groceries" {...field} />
+                <Input
+                  placeholder="What is this transaction?"
+                  type="text"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -79,23 +91,12 @@ export function UpdateForm({ transaction, onSuccess }: Props) {
         />
         <FormField
           control={form.control}
-          name="type"
+          name="categoryId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Type</FormLabel>
+              <FormLabel>Category</FormLabel>
               <FormControl>
-                <Select
-                  defaultValue={field.value}
-                  onValueChange={field.onChange}
-                >
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Select a type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="INCOME">Income</SelectItem>
-                    <SelectItem value="EXPENSE">Expense</SelectItem>
-                  </SelectContent>
-                </Select>
+                <CategorySelect onChange={field.onChange} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -109,8 +110,6 @@ export function UpdateForm({ transaction, onSuccess }: Props) {
               <FormLabel>Amount</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="How much?"
-                  type="number"
                   {...field}
                   onChange={(e) => {
                     const value = N.parse(e.target.value).pipe(
@@ -119,6 +118,8 @@ export function UpdateForm({ transaction, onSuccess }: Props) {
 
                     field.onChange(value ?? '');
                   }}
+                  placeholder="How much?"
+                  type="number"
                 />
               </FormControl>
               <FormMessage />
@@ -166,10 +167,10 @@ export function UpdateForm({ transaction, onSuccess }: Props) {
             </Button>
           </DialogClose>
           <Button className="flex-1" isLoading={isPending} type="submit">
-            Update
+            Create
           </Button>
         </DialogFooter>
       </form>
     </Form>
   );
-}
+};

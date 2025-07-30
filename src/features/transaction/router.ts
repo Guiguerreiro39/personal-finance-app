@@ -1,7 +1,7 @@
 import { TRPCError } from '@trpc/server';
 import { Effect, Schema } from 'effect';
-import { TransactionInputs } from '@/features/transactions/schema';
-import { TransactionService } from '@/features/transactions/service';
+import { TransactionInputs } from '@/features/transaction/schema';
+import { TransactionService } from '@/features/transaction/service';
 import { RuntimeServer } from '@/lib/runtime-server';
 import { notReachable } from '@/lib/utils';
 import { createTRPCRouter, publicProcedure } from '@/server/api/trpc';

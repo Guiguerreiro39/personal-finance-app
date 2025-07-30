@@ -1,6 +1,10 @@
 import { Layer, ManagedRuntime } from 'effect';
-import { TransactionService } from '@/features/transactions/service';
+import { CategoryService } from '@/features/category/service';
+import { TransactionService } from '@/features/transaction/service';
 
-const MainLayer = Layer.mergeAll(TransactionService.Default);
+const MainLayer = Layer.mergeAll(
+  TransactionService.Default,
+  CategoryService.Default
+);
 
 export const RuntimeServer = ManagedRuntime.make(MainLayer);

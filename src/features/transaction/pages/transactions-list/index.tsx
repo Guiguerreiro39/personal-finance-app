@@ -3,7 +3,7 @@
 import { useDebounce } from '@uidotdev/usehooks';
 import { Suspense, useState } from 'react';
 import { Input } from '@/components/ui/input';
-import { TransactionsTableByDate } from '@/features/transactions/components/transactions-table-by-date.tsx';
+import { TransactionsTableByDate } from '@/features/transaction/components/transactions-table-by-date.tsx';
 import { TransactionsHeader } from './header';
 
 export const TransactionsList = () => {

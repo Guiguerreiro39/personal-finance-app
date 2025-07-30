@@ -6,7 +6,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ExpenseIncomeForm } from '@/features/transactions/components/dialogs/create-transaction/expense-income-form';
+import { ExpenseIncomeForm } from '@/features/transaction/components/dialogs/create-transaction/expense-income-form';
 
 type Props = {
   open: boolean;
